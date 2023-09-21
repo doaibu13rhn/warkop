@@ -48,6 +48,22 @@ server.post("/users", (req, res) => {
             });
         });
 });
+
+server.patch("/users/:users_id", async (req, res) => {
+    try {
+        const { body, params } = req;
+        const sql = `update users set address = $1, updated_at = now() where id = $2`;
+        const values = [body.address, params.users_id];
+        await db.query(sql, values);
+        res.status(200).json({
+            msg: 'update address for user id ${params.users_id} has changed to ${body.address}',
+        })
+    } catch (error) {
+        res.status(500).json({
+            msg: "internal server error",
+        })
+    }
+})
 server.listen(8000, () => {
     console.log("server is running at port 8000")
 })
