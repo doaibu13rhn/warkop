@@ -28,7 +28,7 @@ server.get("/users", async (req, res) => {
             error: error,
         })
     }
-})
+});
 
 server.post("/users", (req, res) => {
     const { body } = req;
@@ -49,21 +49,40 @@ server.post("/users", (req, res) => {
         });
 });
 
-server.patch("/users/:users_id", async (req, res) => {
+server.patch("/users/:id", async (req, res) => {
     try {
         const { body, params } = req;
-        const sql = `update users set address = $1, updated_at = now() where id = $2`;
-        const values = [body.address, params.users_id];
+        const sql = `update users set address = $1, updated_at = now() where usersid = $2`;
+        const values = [body.address, params.id];
         await db.query(sql, values);
         res.status(200).json({
-            msg: 'update address for user id ${params.users_id} has changed to ${body.address}',
+            msg: `update address for user id ${params.id} has changed to ${body.address}`,
         })
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             msg: "internal server error",
         })
     }
-})
+});
+
+server.delete("/users/:id", async (req, res) => {
+    try {
+        const { params } = req;
+        const sql = `delete from users where usersid = $1 returning Username`;
+        const values = [params.id];
+        const data = await db.query(sql, values);
+        res.status(200).json({
+            msg: `user id ${params.id} has been deleted`,
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            msg: "internal server error",
+        })
+    }
+});
+
 server.listen(8000, () => {
     console.log("server is running at port 8000")
 })
