@@ -14,6 +14,7 @@ const db = new Pool({
     password: "12345",
 });
 
+//users
 server.get("/users", async (req, res) => {
     try {
         const sql = `select  Username, address FROM users`;
@@ -82,10 +83,12 @@ server.delete("/users/:id", async (req, res) => {
         })
     }
 });
+//users
 
-server.get("/users", async (req, res) => {
+// product
+server.get("/product", async (req, res) => {
     try {
-        const sql = `select  Username, address FROM users`;
+        const sql = `select ProductName, Price, Description FROM product`;
         const result = await db.query(sql);
         res.status(201).json({
             msg: "success",
@@ -99,14 +102,14 @@ server.get("/users", async (req, res) => {
     }
 });
 
-server.post("/users", (req, res) => {
+server.post("/product", (req, res) => {
     const { body } = req;
-    const sql = "INSERT INTO users (Username, email, password, address, created_at) VALUES ($1,$2,$3,$4,$5)";
-    const values = [body.Username, body.email, body.password, body.address, body.created_at];
+    const sql = "INSERT INTO product (ProductName, Price, Description, created_at) VALUES ($1,$2,$3,$4)";
+    const values = [body.ProductName, body.Price, body.Description, body.created_at];
     db.query(sql, values)
         .then((data) => {
             res.status(201).json({
-                msg: "successfully added new users data",
+                msg: "successfully added new product",
                 result: data.rows,
             });
         })
@@ -118,14 +121,14 @@ server.post("/users", (req, res) => {
         });
 });
 
-server.patch("/users/:id", async (req, res) => {
+server.patch("/product/:id", async (req, res) => {
     try {
         const { body, params } = req;
-        const sql = `update users set address = $1, updated_at = now() where usersid = $2`;
-        const values = [body.address, params.id];
+        const sql = `update product set Price = $1, updated_at = now() where productid = $2`;
+        const values = [body.Price, params.id];
         await db.query(sql, values);
         res.status(200).json({
-            msg: `update address for user id ${params.id} has changed to ${body.address}`,
+            msg: `update Pice for product id ${params.id} has changed to ${body.Price}`,
         })
     } catch (error) {
         console.log(error)
@@ -135,14 +138,14 @@ server.patch("/users/:id", async (req, res) => {
     }
 });
 
-server.delete("/users/:id", async (req, res) => {
+server.delete("/product/:id", async (req, res) => {
     try {
         const { params } = req;
-        const sql = `delete from users where usersid = $1 returning Username`;
+        const sql = `delete from product where productid = $1 returning ProductName`;
         const values = [params.id];
         const data = await db.query(sql, values);
         res.status(200).json({
-            msg: `user id ${params.id} has been deleted`,
+            msg: `Product id ${params.id} has been deleted`,
         })
     } catch (error) {
         console.log(error)
@@ -151,10 +154,12 @@ server.delete("/users/:id", async (req, res) => {
         })
     }
 });
+// product
 
-server.get("/users", async (req, res) => {
+// promo
+server.get("/promo", async (req, res) => {
     try {
-        const sql = `select  Username, address FROM users`;
+        const sql = `select promoName, startDate, endDate FROM promo`;
         const result = await db.query(sql);
         res.status(201).json({
             msg: "success",
@@ -168,14 +173,14 @@ server.get("/users", async (req, res) => {
     }
 });
 
-server.post("/users", (req, res) => {
+server.post("/promo", (req, res) => {
     const { body } = req;
-    const sql = "INSERT INTO users (Username, email, password, address, created_at) VALUES ($1,$2,$3,$4,$5)";
-    const values = [body.Username, body.email, body.password, body.address, body.created_at];
+    const sql = "INSERT INTO promo (promoName, discountPercentage, startDate, endDate, productId, created_at) VALUES ($1,$2,$3,$4,$5,$6)";
+    const values = [body.promoName, body.discountPercentage, body.startDate, body.endDate, body.productId, body.created_at];
     db.query(sql, values)
         .then((data) => {
             res.status(201).json({
-                msg: "successfully added new users data",
+                msg: "successfully added new promo",
                 result: data.rows,
             });
         })
@@ -187,14 +192,14 @@ server.post("/users", (req, res) => {
         });
 });
 
-server.patch("/users/:id", async (req, res) => {
+server.patch("/promo/:id", async (req, res) => {
     try {
         const { body, params } = req;
-        const sql = `update users set address = $1, updated_at = now() where usersid = $2`;
-        const values = [body.address, params.id];
+        const sql = `update promo set discountPercentage = $1, updated_at = now() where promoid = $2`;
+        const values = [body.discountPercentage, params.id];
         await db.query(sql, values);
         res.status(200).json({
-            msg: `update address for user id ${params.id} has changed to ${body.address}`,
+            msg: `update discount for product id ${params.id} has changed to ${body.discountPercentage}`,
         })
     } catch (error) {
         console.log(error)
@@ -204,14 +209,14 @@ server.patch("/users/:id", async (req, res) => {
     }
 });
 
-server.delete("/users/:id", async (req, res) => {
+server.delete("/promo/:id", async (req, res) => {
     try {
         const { params } = req;
-        const sql = `delete from users where usersid = $1 returning Username`;
+        const sql = `delete from promo where promoid = $1 returning promoName`;
         const values = [params.id];
         const data = await db.query(sql, values);
         res.status(200).json({
-            msg: `user id ${params.id} has been deleted`,
+            msg: `promo id ${params.id} has been deleted`,
         })
     } catch (error) {
         console.log(error)
@@ -220,10 +225,12 @@ server.delete("/users/:id", async (req, res) => {
         })
     }
 });
+// promo
 
-server.get("/users", async (req, res) => {
+// orders
+server.get("/orders", async (req, res) => {
     try {
-        const sql = `select  Username, address FROM users`;
+        const sql = `select UsersId, date_of_Orders, subTotal FROM orders`;
         const result = await db.query(sql);
         res.status(201).json({
             msg: "success",
@@ -237,14 +244,14 @@ server.get("/users", async (req, res) => {
     }
 });
 
-server.post("/users", (req, res) => {
+server.post("/orders", (req, res) => {
     const { body } = req;
-    const sql = "INSERT INTO users (Username, email, password, address, created_at) VALUES ($1,$2,$3,$4,$5)";
-    const values = [body.Username, body.email, body.password, body.address, body.created_at];
+    const sql = "INSERT INTO orders (date_of_Orders, UsersId, subTotal, created_at) VALUES ($1,$2,$3,$4)";
+    const values = [body.date_of_Orders, body.UsersId, body.subTotal, body.created_at];
     db.query(sql, values)
         .then((data) => {
             res.status(201).json({
-                msg: "successfully added new users data",
+                msg: "successfully added new order",
                 result: data.rows,
             });
         })
@@ -256,14 +263,14 @@ server.post("/users", (req, res) => {
         });
 });
 
-server.patch("/users/:id", async (req, res) => {
+server.patch("/orders/:id", async (req, res) => {
     try {
         const { body, params } = req;
-        const sql = `update users set address = $1, updated_at = now() where usersid = $2`;
-        const values = [body.address, params.id];
+        const sql = `update orders set subTotal = $1, updated_at = now() where ordersid = $2`;
+        const values = [body.subTotal, params.id];
         await db.query(sql, values);
         res.status(200).json({
-            msg: `update address for user id ${params.id} has changed to ${body.address}`,
+            msg: `update Price total for order id ${params.id} has changed to ${body.subTotal}`,
         })
     } catch (error) {
         console.log(error)
@@ -273,14 +280,14 @@ server.patch("/users/:id", async (req, res) => {
     }
 });
 
-server.delete("/users/:id", async (req, res) => {
+server.delete("/orders/:id", async (req, res) => {
     try {
         const { params } = req;
-        const sql = `delete from users where usersid = $1 returning Username`;
+        const sql = `delete from orders where ordersid = $1 returning date_of_orders`;
         const values = [params.id];
         const data = await db.query(sql, values);
         res.status(200).json({
-            msg: `user id ${params.id} has been deleted`,
+            msg: `order id ${params.id} has been deleted`,
         })
     } catch (error) {
         console.log(error)
@@ -289,6 +296,7 @@ server.delete("/users/:id", async (req, res) => {
         })
     }
 });
+// orders
 
 server.listen(8000, () => {
     console.log("server is running at port 8000")
