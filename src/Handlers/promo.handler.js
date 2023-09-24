@@ -1,7 +1,9 @@
+const { addPromo, promoUpdate, readPromo, promoDelete } = require("../Models/promo.model");
+
 const promoInfo = async (req, res) => {
     try {
-        const sql = `select promoName, startDate, endDate FROM promo`;
-        const result = await db.query(sql);
+        const { query } = req;
+        const result = await readPromo(query);
         res.status(201).json({
             msg: "success",
             result: result.rows
@@ -16,15 +18,12 @@ const promoInfo = async (req, res) => {
 
 const insertNewPromo = (req, res) => {
     const { body } = req;
-    const sql = "INSERT INTO promo (promoName, discountPercentage, startDate, endDate, productId, created_at) VALUES ($1,$2,$3,$4,$5,$6)";
-    const values = [body.promoName, body.discountPercentage, body.startDate, body.endDate, body.productId, body.created_at];
-    db.query(sql, values)
-        .then((data) => {
-            res.status(201).json({
-                msg: "successfully added new promo",
-                result: data.rows,
-            });
-        })
+    addPromo(body.promoName, body.discountPercentage, body.startDate, body.endDate, body.productId, body.created_at).then((data) => {
+        res.status(201).json({
+            msg: "successfully added new promo",
+            result: data.rows,
+        });
+    })
         .catch((err) => {
             console.log(err);
             res.status(500).json({
@@ -36,9 +35,7 @@ const insertNewPromo = (req, res) => {
 const updatePromo = async (req, res) => {
     try {
         const { body, params } = req;
-        const sql = `update promo set discountPercentage = $1, updated_at = now() where promoid = $2`;
-        const values = [body.discountPercentage, params.id];
-        await db.query(sql, values);
+        await promoUpdate(body.discountPercentage, params.id);
         res.status(200).json({
             msg: `update discount for product id ${params.id} has changed to ${body.discountPercentage}`,
         })
@@ -53,9 +50,7 @@ const updatePromo = async (req, res) => {
 const deletePromo = async (req, res) => {
     try {
         const { params } = req;
-        const sql = `delete from promo where promoid = $1 returning promoName`;
-        const values = [params.id];
-        const data = await db.query(sql, values);
+        const data = await promoDelete(params.id);
         res.status(200).json({
             msg: `promo id ${params.id} has been deleted`,
         })

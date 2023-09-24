@@ -1,14 +1,15 @@
-const { addUsers, update, deleteUsers } = require("../Models/users.model");
+const { addUsers, update, deleteUsers, readUsers } = require("../Models/users.model");
 
 const getUsersInfo = async (req, res) => {
     try {
-        const sql = `select  Username, address FROM users`;
-        const result = await db.query(sql);
+        const { query } = req;
+        const result = await readUsers(query);
         res.status(201).json({
             msg: "success",
             result: result.rows
         })
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             msg: "error cuy",
             error: error,
@@ -18,12 +19,13 @@ const getUsersInfo = async (req, res) => {
 
 const insertNewUsers = (req, res) => {
     const { body } = req;
-    addUsers(body.Username, body.email, body.password, body.address, body.created_at).then((data) => {
-        res.status(201).json({
-            msg: "successfully added new users data",
-            result: data.rows,
-        });
-    })
+    addUsers(body.Username, body.email, body.password, body.address, body.created_at)
+        .then((data) => {
+            res.status(201).json({
+                msg: "successfully added new users data",
+                result: data.rows,
+            });
+        })
         .catch((err) => {
             console.log(err);
             res.status(500).json({
