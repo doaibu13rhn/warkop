@@ -1,7 +1,7 @@
 const argon = require("argon2");
 const jwt = require("jsonwebtoken");
 const { createUsers, getPsw } = require("../Models/auth.model");
-const { jwtKey } = require("../Configs/environment")
+const { jwtKey, issuer } = require("../Configs/environment")
 
 const register = async (req, res) => {
     const { body: { Username, email, password, address } } = req;
@@ -40,7 +40,7 @@ const login = async (req, res) => {
         if (!result.rows.length) return res.status(404).json({
             msg: "email not registered"
         })
-        const { password, Username } = result.rows[0];
+        const { password, Username, role } = result.rows[0];
         const isValid = await argon.verify(password, Password);
         if (!isValid)
             return res.status(401).json({
@@ -49,10 +49,11 @@ const login = async (req, res) => {
         const payload = {
             Username,
             email,
+            role,
         };
         jwt.sign(payload, jwtKey, {
             expiresIn: "5m",
-            issuer: "raihan"
+            issuer,
         }, (error, token) => {
             if (error) throw error;
             res.status(200).json({
