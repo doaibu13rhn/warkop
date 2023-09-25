@@ -1,7 +1,9 @@
+const { readOrders, addOrders, ordersUpdate, ordersDelete } = require("../Models/orders.model")
+
 const ordersInfo = async (req, res) => {
     try {
-        const sql = `select UsersId, date_of_Orders, subTotal FROM orders`;
-        const result = await db.query(sql);
+        const { query } = req;
+        const result = await readOrders(query);
         res.status(201).json({
             msg: "success",
             result: result.rows
@@ -16,9 +18,7 @@ const ordersInfo = async (req, res) => {
 
 const insertNewOrders = (req, res) => {
     const { body } = req;
-    const sql = "INSERT INTO orders (date_of_Orders, UsersId, subTotal, created_at) VALUES ($1,$2,$3,$4)";
-    const values = [body.date_of_Orders, body.UsersId, body.subTotal, body.created_at];
-    db.query(sql, values)
+    addOrders(body.date_of_Orders, body.UsersId, body.subTotal, body.created_at)
         .then((data) => {
             res.status(201).json({
                 msg: "successfully added new order",
@@ -36,9 +36,7 @@ const insertNewOrders = (req, res) => {
 const updateOrders = async (req, res) => {
     try {
         const { body, params } = req;
-        const sql = `update orders set subTotal = $1, updated_at = now() where ordersid = $2`;
-        const values = [body.subTotal, params.id];
-        await db.query(sql, values);
+        await ordersUpdate(body.subTotal, params.id)
         res.status(200).json({
             msg: `update Price total for order id ${params.id} has changed to ${body.subTotal}`,
         })
@@ -53,9 +51,7 @@ const updateOrders = async (req, res) => {
 const deleteOrders = async (req, res) => {
     try {
         const { params } = req;
-        const sql = `delete from orders where ordersid = $1 returning date_of_orders`;
-        const values = [params.id];
-        const data = await db.query(sql, values);
+        const data = await ordersDelete(params.id);
         res.status(200).json({
             msg: `order id ${params.id} has been deleted`,
         })
