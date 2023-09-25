@@ -6,6 +6,13 @@ const createUsers = (Username, email, password, address) => {
     return db.query(sql, values);
 };
 
+const getPsw = (email) => {
+    const sql = `select password, Username from users where email = $1`;
+    const values = [email];
+    return db.query(sql, values);
+};
+
 module.exports = {
     createUsers,
+    getPsw,
 };
