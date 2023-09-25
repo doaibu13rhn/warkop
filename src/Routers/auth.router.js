@@ -1,8 +1,8 @@
 const authRouther = require("express").Router();
-const argon = require("argon2");
 
-authRouther.post("/", (req, res) => {
-    const { body } = req;
 
-})
+const { register } = require("../Handlers/auth.handler")
+
+authRouther.post("/register", register);
+
 module.exports = authRouther;
