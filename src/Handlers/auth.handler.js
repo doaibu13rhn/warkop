@@ -52,7 +52,7 @@ const login = async (req, res) => {
             role,
         };
         jwt.sign(payload, jwtKey, {
-            expiresIn: "5m",
+            expiresIn: "10m",
             issuer,
         }, (error, token) => {
             if (error) throw error;

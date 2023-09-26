@@ -15,7 +15,7 @@ const isLogin = (req, res, next) => {
                     msg: "Expired to Access, Please Login again!"
                 });
                 case "NotBeforeError": return res.status(401).json({
-                    msg: "Your access not started yet, please accen on time"
+                    msg: "Your access not started yet, please access on time"
                 })
             }
         }
@@ -24,6 +24,24 @@ const isLogin = (req, res, next) => {
     });
 };
 
+const isAdmin = (req, res, next) => {
+    if (req.userInfo.user_role !== 'admin') {
+        return res.status(403).json({ msg: "access denied" });
+    }
+
+    next();
+};
+
+const isUser = (req, res, next) => {
+    if (req.userInfo.user_role !== 'user') {
+        return res.status(403).json({ msg: "access denied" });
+    }
+
+    next();
+};
+
 module.exports = {
     isLogin,
-}
+    isAdmin,
+    isUser,
+};

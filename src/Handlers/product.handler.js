@@ -1,16 +1,34 @@
-const { readProduct, insertProduct, productUpdate, productDelete } = require("../Models/product.model")
+const { readProduct, insertProduct, productUpdate, productDelete, search, count } = require("../Models/product.model")
 
 const productInfo = async (req, res) => {
     try {
         const { query } = req;
-        const result = await readProduct(query);
+        const result = await readProduct(query.page, query.limit);
+        if (!result.rows.length) return res.status(404).json({
+            msg: "Page not found",
+        });
+        const metaResult = await count({
+            page: query.page,
+            limit: query.limit,
+        });
+        const totalData = parseInt(metaResult.rows[0].total_data);
+        const totalPage = Math.ceil(totalData / parseInt(query.limit));
+        const isLastPage = parseInt(query.page) > totalPage;
+        const meta = {
+            page: parseInt(query.page),
+            totalPage,
+            totalData,
+            next: isLastPage ? null : "next page link",
+            prev: parseInt(query.page) === 1 ? null : "prev page link",
+        };
         res.status(201).json({
             msg: "success",
-            result: result.rows
+            result: result.rows,
+            meta,
         })
     } catch (error) {
         res.status(500).json({
-            msg: "error cuy",
+            msg: "internal server error",
             error: error,
         })
     }
@@ -66,10 +84,7 @@ const deleteProduct = async (req, res) => {
 const searchProduct = async (req, res) => {
     try {
         const { query } = req;
-        const sql = `SELECT * FROM product
-        WHERE ProductName ilike $1`;
-        const values = [`%${query.title}%`];
-        const result = await db.query(sql, values);
+        const result = await search(`%${query.title}%`);
         if (result.rows.length === 0) return res.status(404).json({
             msg: "This product is empty"
         })
@@ -80,7 +95,7 @@ const searchProduct = async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            msg: "error cuy",
+            msg: "internal server error",
             error: error,
         })
     }
