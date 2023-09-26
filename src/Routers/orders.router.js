@@ -5,12 +5,12 @@ const { isLogin, isAdmin, isUser } = require("../Middlewares/authorization");
 
 const { ordersInfo, insertNewOrders, updateOrders, deleteOrders } = require("../Handlers/orders.handler")
 
-ordersRouter.get("/", isUser, isAdmin, ordersInfo);
+ordersRouter.get("/", ordersInfo);
 
 ordersRouter.post("/", insertNewOrders);
 
 ordersRouter.patch("/:id", updateOrders);
 
-ordersRouter.delete("/:id", deleteOrders);
+ordersRouter.delete("/:id", isAdmin, deleteOrders);
 
 module.exports = ordersRouter;
