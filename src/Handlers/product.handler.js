@@ -1,4 +1,4 @@
-const { readProduct, insertProduct, productUpdate, productDelete, search, count } = require("../Models/product.model")
+const { readProduct, insertProduct, updateProduct, productDelete, search, count } = require("../Models/product.model")
 
 const productInfo = async (req, res) => {
     try {
@@ -36,7 +36,7 @@ const productInfo = async (req, res) => {
 
 const insertNewProduct = (req, res) => {
     const { body } = req;
-    insertProduct(body.ProductName, body.Price, body.Description, body.created_at)
+    insertProduct(body.ProductName, body.Price, body.Description)
         .then((data) => {
             res.status(201).json({
                 msg: "successfully added new product",
@@ -54,9 +54,9 @@ const insertNewProduct = (req, res) => {
 const updatePrice = async (req, res) => {
     try {
         const { body, params } = req;
-        await productUpdate(body.price, params.id);
+        await updateProduct(body.price, params.id);
         res.status(200).json({
-            msg: `update Pice for product id ${params.id} has changed to ${body.Price}`,
+            msg: `update Price for product id ${params.id} has changed to ${body.price}`,
         })
     } catch (error) {
         console.log(error)
@@ -69,7 +69,7 @@ const updatePrice = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const { params } = req;
-        const data = await productDelete(paramas.id);
+        const data = await productDelete(params.id);
         res.status(200).json({
             msg: `Product id ${params.id} has been deleted`,
         })

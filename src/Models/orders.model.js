@@ -7,9 +7,9 @@ const readOrders = () => {
     return db.query(sql, values);
 };
 
-const addOrders = (Odate_of_Orders, OUsersId, OsubTotal, Ocreated_at) => {
-    const sql = "INSERT INTO orders (date_of_Orders, UsersId, subTotal, created_at) VALUES ($1,$2,$3,$4)";
-    const values = [Odate_of_Orders, OUsersId, OsubTotal, Ocreated_at];
+const addOrders = (Odate_of_Orders, OsubTotal) => {
+    const sql = "INSERT INTO orders (date_of_Orders, subTotal) VALUES ($1,$2)";
+    const values = [Odate_of_Orders, OsubTotal];
     return db.query(sql, values);
 };
 

@@ -7,9 +7,9 @@ const readPromo = () => {
     return db.query(sql, values);
 };
 
-const addPromo = (PpromoName, PdiscountPercentage, PstartDate, PendDate, PproductId, Pcreated_at) => {
-    const sql = "INSERT INTO promo (promoName, discountPercentage, startDate, endDate, productId, created_at) VALUES ($1,$2,$3,$4,$5,$6)";
-    const values = [PpromoName, PdiscountPercentage, PstartDate, PendDate, PproductId, Pcreated_at];
+const addPromo = (PpromoName, PdiscountPercentage, PstartDate, PendDate, PproductId) => {
+    const sql = "INSERT INTO promo (promoName, discountPercentage, startDate, endDate, productId) VALUES ($1,$2,$3,$4,$5)";
+    const values = [PpromoName, PdiscountPercentage, PstartDate, PendDate, PproductId];
     return db.query(sql, values)
 };
 

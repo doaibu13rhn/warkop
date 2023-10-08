@@ -10,7 +10,7 @@ const ordersInfo = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            msg: "error cuy",
+            msg: "Internal server error",
             error: error,
         })
     }
@@ -18,7 +18,7 @@ const ordersInfo = async (req, res) => {
 
 const insertNewOrders = (req, res) => {
     const { body } = req;
-    addOrders(body.date_of_Orders, body.UsersId, body.subTotal, body.created_at)
+    addOrders(body.date_of_Orders, body.subTotal)
         .then((data) => {
             res.status(201).json({
                 msg: "successfully added new order",

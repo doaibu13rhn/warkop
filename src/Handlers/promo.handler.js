@@ -10,7 +10,7 @@ const promoInfo = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            msg: "error cuy",
+            msg: "Internal server error",
             error: error,
         })
     }

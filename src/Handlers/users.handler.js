@@ -11,7 +11,7 @@ const getUsersInfo = async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            msg: "error cuy",
+            msg: "Internal server error",
             error: error,
         })
     }
@@ -19,7 +19,7 @@ const getUsersInfo = async (req, res) => {
 
 const insertNewUsers = (req, res) => {
     const { body } = req;
-    addUsers(body.Username, body.email, body.password, body.address, body.created_at)
+    addUsers(body.Username, body.email, body.password, body.address)
         .then((data) => {
             res.status(201).json({
                 msg: "successfully added new users data",

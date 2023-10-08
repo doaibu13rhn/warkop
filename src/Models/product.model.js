@@ -31,9 +31,9 @@ const count = (queries) => {
     return db.query(sql, values);
 };
 
-const insertProduct = (iProductName, iPrice, iDescription, icreated_at) => {
-    const sql = "INSERT INTO product (ProductName, Price, Description, created_at) VALUES ($1,$2,$3,$4)";
-    const values = [iProductName, iPrice, iDescription, icreated_at];
+const insertProduct = (iProductName, iPrice, iDescription) => {
+    const sql = "INSERT INTO product (ProductName, Price, Description) VALUES ($1,$2,$3)";
+    const values = [iProductName, iPrice, iDescription];
     return db.query(sql, values);
 };
 

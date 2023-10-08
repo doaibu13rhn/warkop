@@ -1,9 +1,9 @@
 const { query } = require("express");
 const db = require("../Configs/postgre");
 
-const addUsers = (Uname, Uemail, Upassword, Uaddress, Ucreated_at) => {
-    const sql = "INSERT INTO users (Username, email, password, address, created_at) VALUES ($1,$2,$3,$4,$5)";
-    const values = [Uname, Uemail, Upassword, Uaddress, Ucreated_at];
+const addUsers = (Uname, Uemail, Upassword, Uaddress) => {
+    const sql = "INSERT INTO users (Username, email, password, address) VALUES ($1,$2,$3,$4)";
+    const values = [Uname, Uemail, Upassword, Uaddress];
     return db.query(sql, values)
 };
 
